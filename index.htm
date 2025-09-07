@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christmas Name Drawing</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .login-container h1 {
+            color: #2c5aa0;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .login-container button:hover {
+            background: #218838;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            background: #e9ecef;
+            border: none;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            background: #dee2e6;
+        }
+
+        .tab.active {
+            background: white;
+            color: #2c5aa0;
+            border-bottom: 3px solid #2c5aa0;
+        }
+
+        .tab-content {
+            padding: 30px;
+            min-height: 500px;
+        }
+
+        .table-section {
+            margin-bottom: 40px;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #2c5aa0;
+        }
+
+        .table-section h3 {
+            color: #2c5aa0;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .input-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .input-table th {
+            background: #2c5aa0;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .input-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .input-table input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .input-table input:focus {
+            outline: none;
+            border-color: #2c5aa0;
+            box-shadow: 0 0 0 2px rgba(44,90,160,0.2);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background: #2c5aa0;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e3d6f;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+        }
+
+        .draw-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .draw-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            font-size: 18px;
+        }
+
+        .draw-table td {
+            padding: 15px 20px;
+            font-size: 16px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .draw-result {
+            font-weight: 600;
+            color: #28a745;
+            min-height: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .modal h3 {
+            color: #dc3545;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .modal p {
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .validation-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #856404;
+        }
+
+        .success-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #155724;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 200px;
+            }
+            
+            .main-container {
+                margin: 10px;
+            }
+            
+            .tab-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <h1>🎄 Christmas Name Drawing</h1>
+        <input type="password" id="passwordInput" placeholder="Enter password" />
+        <button onclick="login()">Enter</button>
+        <div id="loginError" style="color: red; margin-top: 10px; display: none;">
+            Incorrect password. Please try again.
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="hidden">
+        <div class="main-container">
+            <div class="header">
+                <h1>🎄 Christmas Name Drawing</h1>
+                <p>Organize your family gift exchange with ease</p>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('setup')">Set Up</button>
+                <button class="tab" onclick="showTab('drawing')">Drawing</button>
+            </div>
+
+            <!-- Setup Tab -->
+            <div id="setupTab" class="tab-content">
+                <div class="table-section">
+                    <h3>📝 Participants This Year</h3>
+                    <table class="input-table">
+                        <thead>
+                            <tr><th>Person</th><th>Name</th></tr>
+                        </thead>
+                        <tbody id="participantsTable">
+                            <!-- Generated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-section">
+                    <h3>📋 Last Year's Results</h3>
+                    <table class="input-table">
+                        <thead>
+                            <tr><th>Gift Giver</th><th>Gift Receiver</th></tr>
+                        </thead>
+                        <tbody id="lastYearTable">
+                            <!-- Generated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-section">
+                    <h3>💑 Married Couples</h3>
+                    <table class="input-table">
+                        <thead>
+                            <tr><th>Spouse 1</th><th>Spouse 2</th></tr>
+                        </thead>
+                        <tbody id="spousesTable">
+                            <!-- Generated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-success" onclick="saveData()">💾 Save</button>
+                    <button class="btn btn-danger" onclick="showResetModal()">🔄 Reset</button>
+                </div>
+            </div>
+
+            <!-- Drawing Tab -->
+            <div id="drawingTab" class="tab-content hidden">
+                <div id="validationWarning" class="validation-warning hidden">
+                    <strong>⚠️ Validation Warning:</strong> Some setup tables are empty. 
+                    <button class="btn btn-warning" onclick="showTab('setup')" style="margin-left: 10px;">Go Back to Setup</button>
+                    <button class="btn btn-primary" onclick="hideValidationWarning()" style="margin-left: 10px;">Continue Anyway</button>
+                </div>
+
+                <div id="drawingSection">
+                    <div class="controls">
+                        <button id="drawButton" class="btn btn-primary" onclick="drawName()">🎲 Ready to Start Drawing</button>
+                        <button id="downloadButton" class="btn btn-success hidden" onclick="downloadPDF()">📄 Download PDF</button>
+                    </div>
+
+                    <table class="draw-table" style="margin-top: 30px;">
+                        <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Person Drawing</th>
+                                <th>Buys Gift For</th>
+                            </tr>
+                        </thead>
+                        <tbody id="drawResultsTable">
+                            <!-- Generated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Confirmation Modal -->
+    <div id="resetModal" class="modal">
+        <div class="modal-content">
+            <h3>⚠️ Confirm Reset</h3>
+            <p>This will:</p>
+            <ul style="text-align: left; margin: 20px 0;">
+                <li>Copy current drawing results to "Last Year's Results"</li>
+                <li>Clear the current drawing table</li>
+                <li>Keep participants and couples unchanged</li>
+                <li>Return you to the Setup tab</li>
+            </ul>
+            <p><strong>Are you sure you want to proceed?</strong></p>
+            <div style="margin-top: 30px;">
+                <button class="btn btn-danger" onclick="resetData()">Yes, Reset</button>
+                <button class="btn btn-primary" onclick="hideResetModal()" style="margin-left: 10px;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App state
+        let appData = {
+            participants: [],
+            lastYear: [],
+            spouses: [],
+            drawResults: [],
+            currentDrawIndex: 0,
+            hasUnsavedChanges: false
+        };
+
+        const APP_PASSWORD = "christmas2024"; // Change this to your desired password
+
+        // Initialize the app
+        function initializeApp() {
+            loadData();
+            generateTables();
+            setupAutoSave();
+        }
+
+        // Login functionality
+        function login() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === APP_PASSWORD) {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                initializeApp();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+
+        // Allow Enter key for login
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
+        });
+
+        // Generate input tables
+        function generateTables() {
+            // Participants table
+            const participantsTable = document.getElementById('participantsTable');
+            participantsTable.innerHTML = '';
+            for (let i = 0; i < 15; i++) {
+                const row = participantsTable.insertRow();
+                row.insertCell(0).innerHTML = `n${i + 1}`;
+                row.insertCell(1).innerHTML = `<input type="text" id="participant_${i}" value="${appData.participants[i] || ''}" onchange="markUnsaved()">`;
+            }
+
+            // Last year table
+            const lastYearTable = document.getElementById('lastYearTable');
+            lastYearTable.innerHTML = '';
+            for (let i = 0; i < 15; i++) {
+                const row = lastYearTable.insertRow();
+                row.insertCell(0).innerHTML = `<input type="text" id="lastYear_giver_${i}" value="${appData.lastYear[i]?.giver || ''}" onchange="markUnsaved()">`;
+                row.insertCell(1).innerHTML = `<input type="text" id="lastYear_receiver_${i}" value="${appData.lastYear[i]?.receiver || ''}" onchange="markUnsaved()">`;
+            }
+
+            // Spouses table
+            const spousesTable = document.getElementById('spousesTable');
+            spousesTable.innerHTML = '';
+            for (let i = 0; i < 6; i++) {
+                const row = spousesTable.insertRow();
+                row.insertCell(0).innerHTML = `<input type="text" id="spouse1_${i}" value="${appData.spouses[i]?.spouse1 || ''}" onchange="markUnsaved()">`;
+                row.insertCell(1).innerHTML = `<input type="text" id="spouse2_${i}" value="${appData.spouses[i]?.spouse2 || ''}" onchange="markUnsaved()">`;
+            }
+        }
+
+        // Tab switching
+        function showTab(tabName) {
+            // Validate before switching to drawing tab
+            if (tabName === 'drawing') {
+                if (!validateSetup()) {
+                    // Stay on current tab, don't switch
+                    return;
+                }
+                generateDrawingTable();
+            }
+
+            // Clear highlights when leaving setup tab
+            if (tabName === 'setup') {
+                clearHighlights();
+            }
+
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Show/hide content
+            document.getElementById('setupTab').classList.toggle('hidden', tabName !== 'setup');
+            document.getElementById('drawingTab').classList.toggle('hidden', tabName !== 'drawing');
+        }
+
+        // Validation
+        function validateSetup() {
+            const participants = getParticipants();
+            const lastYear = getLastYear();
+            const spouses = getSpouses();
+
+            const warnings = [];
+            if (participants.length === 0) warnings.push("No participants entered");
+            if (lastYear.length === 0) warnings.push("No last year data entered");
+            if (spouses.length === 0) warnings.push("No spouse pairs entered");
+
+            if (warnings.length > 0) {
+                document.getElementById('validationWarning').classList.remove('hidden');
+                return false;
+            }
+
+            return true;
+        }
+
+        function hideValidationWarning() {
+            document.getElementById('validationWarning').classList.add('hidden');
+            generateDrawingTable();
+        }
+
+        // Get data from forms
+        function getParticipants() {
+            const participants = [];
+            for (let i = 0; i < 15; i++) {
+                const value = document.getElementById(`participant_${i}`).value.trim();
+                if (value) participants.push(value);
+            }
+            return participants;
+        }
+
+        function getLastYear() {
+            const lastYear = [];
+            for (let i = 0; i < 15; i++) {
+                const giver = document.getElementById(`lastYear_giver_${i}`).value.trim();
+                const receiver = document.getElementById(`lastYear_receiver_${i}`).value.trim();
+                if (giver && receiver) {
+                    lastYear.push({ giver, receiver });
+                }
+            }
+            return lastYear;
+        }
+
+        function getSpouses() {
+            const spouses = [];
+            for (let i = 0; i < 6; i++) {
+                const spouse1 = document.getElementById(`spouse1_${i}`).value.trim();
+                const spouse2 = document.getElementById(`spouse2_${i}`).value.trim();
+                if (spouse1 && spouse2) {
+                    spouses.push({ spouse1, spouse2 });
+                }
+            }
+            return spouses;
+        }
+
+        // Generate drawing table
+        function generateDrawingTable() {
+            const participants = getParticipants();
+            
+            if (appData.drawResults.length === 0) {
+                // First time generating - create random order
+                const shuffled = [...participants].sort(() => Math.random() - 0.5);
+                appData.drawResults = shuffled.map(name => ({ drawer: name, receiver: '' }));
+                appData.currentDrawIndex = 0;
+            }
+
+            const drawResultsTable = document.getElementById('drawResultsTable');
+            drawResultsTable.innerHTML = '';
+
+            appData.drawResults.forEach((result, index) => {
+                const row = drawResultsTable.insertRow();
+                row.insertCell(0).innerHTML = `d${index + 1}`;
+                row.insertCell(1).innerHTML = result.drawer;
+                const receiverCell = row.insertCell(2);
+                receiverCell.innerHTML = `<span class="draw-result">${result.receiver}</span>`;
+            });
+
+            updateDrawButton();
+        }
+
+        // Update draw button text
+        function updateDrawButton() {
+            const drawButton = document.getElementById('drawButton');
+            const downloadButton = document.getElementById('downloadButton');
+            
+            if (appData.currentDrawIndex < appData.drawResults.length) {
+                const currentDrawer = appData.drawResults[appData.currentDrawIndex].drawer;
+                drawButton.innerHTML = `🎲 ${currentDrawer} Draw`;
+                drawButton.classList.remove('hidden');
+                downloadButton.classList.add('hidden');
+            } else {
+                drawButton.classList.add('hidden');
+                downloadButton.classList.remove('hidden');
+            }
+        }
+
+        // Draw functionality
+        function drawName() {
+            if (appData.currentDrawIndex >= appData.drawResults.length) return;
+
+            const participants = getParticipants();
+            const lastYear = getLastYear();
+            const spouses = getSpouses();
+            
+            const currentDrawer = appData.drawResults[appData.currentDrawIndex].drawer;
+            
+            // Get exclusions
+            const exclusions = new Set();
+            
+            // Can't draw self
+            exclusions.add(currentDrawer);
+            
+            // Can't draw spouse
+            const spouseData = spouses.find(s => s.spouse1 === currentDrawer || s.spouse2 === currentDrawer);
+            if (spouseData) {
+                exclusions.add(spouseData.spouse1 === currentDrawer ? spouseData.spouse2 : spouseData.spouse1);
+            }
+            
+            // Can't draw same person as last year
+            const lastYearData = lastYear.find(ly => ly.giver === currentDrawer);
+            if (lastYearData) {
+                exclusions.add(lastYearData.receiver);
+            }
+            
+            // Can't draw anyone already assigned
+            appData.drawResults.forEach(result => {
+                if (result.receiver) {
+                    exclusions.add(result.receiver);
+                }
+            });
+            
+            // Get available options
+            const availableOptions = participants.filter(p => !exclusions.has(p));
+            
+            if (availableOptions.length === 0) {
+                alert('No valid options available! You may need to reset and try again.');
+                return;
+            }
+            
+            // Select random option
+            const selectedReceiver = availableOptions[Math.floor(Math.random() * availableOptions.length)];
+            appData.drawResults[appData.currentDrawIndex].receiver = selectedReceiver;
+            appData.currentDrawIndex++;
+            
+            // Update display
+            generateDrawingTable();
+            markUnsaved();
+        }
+
+        // Save/Load functionality
+        function saveData() {
+            appData.participants = getParticipants();
+            appData.lastYear = getLastYear();
+            appData.spouses = getSpouses();
+            
+            localStorage.setItem('christmasDrawData', JSON.stringify(appData));
+            appData.hasUnsavedChanges = false;
+            
+            // Show success message
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.innerHTML = '✅ Data saved successfully!';
+            document.querySelector('.tab-content:not(.hidden)').insertBefore(successDiv, document.querySelector('.tab-content:not(.hidden)').firstChild);
+            setTimeout(() => successDiv.remove(), 3000);
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('christmasDrawData');
+            if (saved) {
+                appData = { ...appData, ...JSON.parse(saved) };
+            }
+        }
+
+        function markUnsaved() {
+            appData.hasUnsavedChanges = true;
+        }
+
+        // Reset functionality
+        function showResetModal() {
+            document.getElementById('resetModal').style.display = 'block';
+        }
+
+        function hideResetModal() {
+            document.getElementById('resetModal').style.display = 'none';
+        }
+
+        function resetData() {
+            // Copy current draw results to last year
+            if (appData.drawResults.length > 0) {
+                appData.lastYear = appData.drawResults
+                    .filter(result => result.receiver)
+                    .map(result => ({ giver: result.drawer, receiver: result.receiver }));
+            }
+            
+            // Clear draw results
+            appData.drawResults = [];
+            appData.currentDrawIndex = 0;
+            
+            // Save and refresh
+            saveData();
+            generateTables();
+            hideResetModal();
+            showTab('setup');
+        }
+
+        // PDF Download
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.text('Christmas Gift Drawing Results', 20, 30);
+            
+            doc.setFontSize(12);
+            let yPosition = 60;
+            
+            appData.drawResults.forEach((result, index) => {
+                if (result.receiver) {
+                    doc.text(`${result.drawer} buys for ${result.receiver}`, 20, yPosition);
+                    yPosition += 10;
+                }
+            });
+            
+            doc.save('christmas-drawing-results.pdf');
+        }
+
+        // Auto-save and unsaved changes warning
+        function setupAutoSave() {
+            window.addEventListener('beforeunload', (e) => {
+                if (appData.hasUnsavedChanges) {
+                    e.preventDefault();
+                    e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+                }
+            });
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('resetModal');
+            if (event.target === modal) {
+                hideResetModal();
+            }
+        }
+    </script>
+</body>
+</html>
